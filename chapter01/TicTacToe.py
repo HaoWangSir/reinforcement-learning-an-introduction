@@ -16,6 +16,7 @@ BOARD_ROWS = 3
 BOARD_COLS = 3
 BOARD_SIZE = BOARD_ROWS * BOARD_COLS
 
+
 class State:
     def __init__(self):
         # the board is represented by a n * n array,
@@ -102,6 +103,7 @@ class State:
             print(out)
         print('-------------')
 
+
 def getAllStatesImpl(currentState, currentSymbol, allStates):
     for i in range(0, BOARD_ROWS):
         for j in range(0, BOARD_COLS):
@@ -114,6 +116,7 @@ def getAllStatesImpl(currentState, currentSymbol, allStates):
                     if not isEnd:
                         getAllStatesImpl(newState, -currentSymbol, allStates)
 
+
 def getAllStates():
     currentSymbol = 1
     currentState = State()
@@ -124,6 +127,7 @@ def getAllStates():
 
 # all possible board configurations
 allStates = getAllStates()
+
 
 class Judger:
     # @player1: player who will move first, its chessman will be 1
@@ -186,6 +190,8 @@ class Judger:
                 return self.currentState.winner
 
 # AI player
+
+
 class Player:
     # @stepSize: step size to update estimations
     # @exploreRate: possibility to explore
@@ -216,12 +222,14 @@ class Player:
         self.states.append(state)
 
     # update estimation according to reward
+    # -------------------------------------
     def feedReward(self, reward):
         if len(self.states) == 0:
             return
         self.states = [state.getHash() for state in self.states]
         target = reward
         for latestState in reversed(self.states):
+            # propagate in backward fashion
             value = self.estimations[latestState] + self.stepSize * (target - self.estimations[latestState])
             self.estimations[latestState] = value
             target = value
@@ -237,6 +245,7 @@ class Player:
                 if state.data[i, j] == 0:
                     nextPositions.append([i, j])
                     nextStates.append(state.nextState(i, j, self.symbol).getHash())
+        # take random action
         if np.random.binomial(1, self.exploreRate):
             np.random.shuffle(nextPositions)
             # Not sure if truncating is the best way to deal with exploratory step
@@ -246,6 +255,7 @@ class Player:
             action.append(self.symbol)
             return action
 
+        # take the most rewarded action
         values = []
         for hash, pos in zip(nextStates, nextPositions):
             values.append((self.estimations[hash], pos))
@@ -313,6 +323,7 @@ def train(epochs=20000):
     player1.savePolicy()
     player2.savePolicy()
 
+
 def compete(turns=500):
     player1 = Player(exploreRate=0)
     player2 = Player(exploreRate=0)
@@ -332,6 +343,7 @@ def compete(turns=500):
     print(player1Win / turns)
     print(player2Win / turns)
 
+
 def play():
     while True:
         player1 = Player(exploreRate=0)
@@ -346,7 +358,9 @@ def play():
         else:
             print("Tie!")
 
-train()
-compete()
-play()
+
+if __name__ == "__main__":
+    train()
+    compete()
+    play()
 
