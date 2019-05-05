@@ -185,6 +185,7 @@ class Judger:
             self.currentState, isEnd = self.allStates[hashValue]
             self.feedCurrentState()
             if isEnd:
+                # assign reward only to the end of game
                 if self.feedback:
                     self.giveReward()
                 return self.currentState.winner
@@ -360,7 +361,7 @@ def play():
 
 
 if __name__ == "__main__":
-    train()
-    compete()
+    # train()
+    # compete()
     play()
 
