@@ -16,7 +16,6 @@ BOARD_ROWS = 3
 BOARD_COLS = 3
 BOARD_SIZE = BOARD_ROWS * BOARD_COLS
 
-
 class State:
     def __init__(self):
         # the board is represented by a n * n array,
